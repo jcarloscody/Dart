@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personalexpenses/models/transaction.dart';
 
-class NewTransaction extends StatelessWidget {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+class NewTransaction extends StatefulWidget {
   Function addNewTransaction;
   Function invalidArgs;
+  NewTransaction({required this.addNewTransaction, required this.invalidArgs});
+
+  @override
+  State<NewTransaction> createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
   int cont = 2;
 
   void submitData() {
@@ -15,19 +22,19 @@ class NewTransaction extends StatelessWidget {
     if (enteredTitle.isEmpty ||
         enteredAmount < 0 ||
         amountController.text.isEmpty) {
-      invalidArgs("wrong! title can't stay empty and amount must be >=0");
+      widget
+          .invalidArgs("wrong! title can't stay empty and amount must be >=0");
     } else {
-      invalidArgs('');
-      addNewTransaction(Transaction(
+      widget.invalidArgs('');
+      widget.addNewTransaction(Transaction(
         id: ++cont,
         title: titleController.text,
         amount: double.parse(amountController.text),
         date: DateTime.now(),
       ));
+      Navigator.of(context).pop(); //fecha a folha movel quando clica em ok
     }
   }
-
-  NewTransaction({required this.addNewTransaction, required this.invalidArgs});
 
   @override
   Widget build(BuildContext context) {

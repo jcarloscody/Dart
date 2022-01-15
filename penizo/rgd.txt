@@ -1,7 +1,0 @@
-allow read
-produto -
-	write - auth 
-oportunidade -
-	write - auth
-usuario - 
-	write read - auth
