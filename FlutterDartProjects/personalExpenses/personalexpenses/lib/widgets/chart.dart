@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personalexpenses/models/transaction.dart';
+import 'package:personalexpenses/widgets/chart_bar.dart';
 
 class Chart extends StatelessWidget {
   final List<Transaction> recentTransactions;
@@ -22,15 +23,42 @@ class Chart extends StatelessWidget {
       /*for (var tx in recentTransactions) {
     print(tx); // tx is the item already! Changes with every iteration of course
 }*/
+      return {
+        'day': DateFormat.E().format(weekDay).substring(0, 1),
+        'amount': totalSum
+      };
+    }).reversed.toList();
+  }
 
-      print({'day': DateFormat.E(weekDay), 'amount': totalSum});
-
-      return {'day': DateFormat.E(weekDay), 'amount': totalSum};
+  double get totalSpending {
+    return groupedTransactionValues.fold(0.0, (sum, element) {
+      return sum + (element['amount'] as double);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    print(groupedTransactionValues);
+    return Card(
+      elevation: 6,
+      margin: EdgeInsets.all(20),
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTransactionValues.map((e) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                  label: e['day'].toString(),
+                  spendingAmount: (e['amount'] as double),
+                  spendingPctTotal: totalSpending == 0
+                      ? 0.0
+                      : (e['amount'] as double) / totalSpending),
+            );
+          }).toList(),
+        ),
+      ),
+    );
   }
 }

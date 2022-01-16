@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:personalexpenses/widgets/chart.dart';
 import 'package:personalexpenses/widgets/new_transaction.dart';
 import 'package:personalexpenses/widgets/transaction_list.dart';
 
@@ -21,10 +22,12 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.amber,
         fontFamily: 'OpenSans',
         textTheme: ThemeData.light().textTheme.copyWith(
-            headline1: TextStyle(
-                fontFamily: 'OpenSans',
-                fontSize: 18,
-                fontWeight: FontWeight.bold)),
+              headline1: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+              button: TextStyle(color: Colors.white),
+            ),
         appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
                 headline1: TextStyle(
@@ -58,6 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
       date: DateTime.now(),
     )*/
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((elem) {
+      return elem.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
+    }).toList();
+  }
 
   String _invalid = '';
 
@@ -115,14 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.red,
                   fontWeight: FontWeight.bold),
             ),
-            Card(
-              // ignore: sized_box_for_whitespace
-              child: Container(
-                child: Text("CHART!"),
-                width: double.infinity,
-              ),
-              elevation: 5,
-            ),
+            Chart(recentTransactions: _recentTransactions),
             TransactionList(transactions: _userTransactions)
           ],
         ),

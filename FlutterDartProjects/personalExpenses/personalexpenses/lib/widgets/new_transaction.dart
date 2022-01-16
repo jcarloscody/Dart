@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personalexpenses/models/transaction.dart';
@@ -59,12 +61,29 @@ class _NewTransactionState extends State<NewTransaction> {
               //on iOS, this might not allow for decimal places. Use  TextInputType.numberWithOptions(decimal:true)
               onSubmitted: (_) => submitData,
             ),
+            Container(
+              height: 50,
+              child: Row(
+                children: [
+                  Text('No date chosen!'),
+                  FlatButton(
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: () {},
+                    child: Text('Chosen date!',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                  )
+                ],
+              ),
+            ),
             // ignore: deprecated_member_use
-            FlatButton(
+            RaisedButton(
               onPressed: submitData,
               child: Text('Add Transaction'),
-              textColor: Colors.blue,
-            )
+              color: Theme.of(context).primaryColor,
+              textColor: Theme.of(context).textTheme.button?.color,
+            ),
           ],
         ),
       ),
