@@ -5,8 +5,10 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  Function deleteTransactions;
 
-  TransactionList({required this.transactions});
+  TransactionList(
+      {required this.transactions, required this.deleteTransactions});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class TransactionList extends StatelessWidget {
                   'NO transactions added yet!',
                   style: Theme.of(context).textTheme.headline1,
                 ),
+                // ignore: prefer_const_constructors
                 SizedBox(
                   height: 20,
                 ),
@@ -35,6 +38,7 @@ class TransactionList extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (context, index) {
                 return Card(
+                  // ignore: prefer_const_constructors
                   margin: EdgeInsets.symmetric(
                     vertical: 8,
                     horizontal: 5,
@@ -54,7 +58,15 @@ class TransactionList extends StatelessWidget {
                       style: Theme.of(context).textTheme.headline1,
                     ),
                     subtitle: Text(
-                        DateFormat.yMMMd().format(transactions[index].date)),
+                      DateFormat.yMMMd().format(transactions[index].date),
+                    ),
+                    trailing: IconButton(
+                      // ignore: prefer_const_constructors
+                      icon: Icon(Icons.delete),
+                      onPressed: () =>
+                          this.deleteTransactions(transactions[index].id),
+                      color: Theme.of(context).errorColor,
+                    ),
                   ),
                 );
               },
