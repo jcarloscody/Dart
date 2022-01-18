@@ -17,7 +17,11 @@ class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
-  int cont = 2;
+  int cont = 0;
+
+  void conte() {
+    cont++;
+  }
 
   void _submitData() {
     final enteredTitle = _titleController.text;
@@ -30,8 +34,10 @@ class _NewTransactionState extends State<NewTransaction> {
           "wrong! title can't stay empty and amount must be >=0 OR Date must be check");
     } else {
       widget.invalidArgs('');
+      conte();
+      print("Contagem $cont");
       widget.addNewTransaction(Transaction(
-        id: ++cont,
+        id: cont,
         title: _titleController.text,
         amount: double.parse(_amountController.text),
         date: (_selectedDate as DateTime),
