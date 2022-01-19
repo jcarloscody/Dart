@@ -1,8 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:personalexpenses/models/transaction.dart';
+import 'package:personalexpenses/widgets/adaptive_button.dart';
 
 class NewTransaction extends StatefulWidget {
   Function addNewTransaction;
@@ -64,55 +68,57 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          // ignore: prefer_const_literals_to_create_immutables
-          children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'Title'),
-              controller: _titleController,
-            ),
-            TextField(
-              // ignore: prefer_const_constructors
-              decoration: InputDecoration(labelText: 'Amount'),
-              // onChanged: (value) => amountController = value,
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              //on iOS, this might not allow for decimal places. Use  TextInputType.numberWithOptions(decimal:true)
-              onSubmitted: (_) => _submitData,
-            ),
-            Container(
-              height: 50,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(_selectedDate == null
-                        ? 'Add Transaction'
-                        : 'Date selected ${DateFormat.yMd().format((_selectedDate as DateTime))}'),
-                  ),
-                  FlatButton(
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: _presentDatePicker,
-                    child: Text('Chosen date!',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )),
-                  )
-                ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            // ignore: prefer_const_literals_to_create_immutables
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Title'),
+                controller: _titleController,
               ),
-            ),
-            // ignore: deprecated_member_use
-            RaisedButton(
-              onPressed: _submitData,
-              child: Text('Add Transaction'),
-              color: Theme.of(context).primaryColor,
-              textColor: Theme.of(context).textTheme.button?.color,
-            ),
-          ],
+              TextField(
+                // ignore: prefer_const_constructors
+                decoration: InputDecoration(labelText: 'Amount'),
+                // onChanged: (value) => amountController = value,
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                //on iOS, this might not allow for decimal places. Use  TextInputType.numberWithOptions(decimal:true)
+                onSubmitted: (_) => _submitData,
+              ),
+              Container(
+                height: 50,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(_selectedDate == null
+                          ? 'Add Transaction'
+                          : 'Date selected ${DateFormat.yMd().format((_selectedDate as DateTime))}'),
+                    ),
+                    AdaptiveFlatButton(
+                        text: "Choose date",
+                        presentDatePicker: _presentDatePicker)
+                  ],
+                ),
+              ),
+              // ignore: deprecated_member_use
+              RaisedButton(
+                onPressed: _submitData,
+                child: Text('Add Transaction'),
+                color: Theme.of(context).primaryColor,
+                textColor: Theme.of(context).textTheme.button?.color,
+              ),
+            ],
+          ),
         ),
       ),
     );

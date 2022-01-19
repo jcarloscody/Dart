@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:personalexpenses/widgets/chart.dart';
@@ -122,8 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLandScape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+
+    final isLandScape = mediaQuery.orientation == Orientation.landscape;
 
     final appBar = AppBar(
       title: Text("Personal Expenses"),
@@ -137,10 +141,29 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
+    final cupertinoNavigationBar = CupertinoNavigationBar(
+      middle: Text("Personal Expenses"),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            child: Icon(
+              CupertinoIcons.add,
+            ),
+            onTap: () {
+              _startAddNewTransaction(context);
+            },
+          )
+        ],
+      ),
+    );
+
     final txListWidget = Container(
-      height: (MediaQuery.of(context).size.height -
-              appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top) *
+      height: (mediaQuery.size.height -
+              (Platform.isIOS
+                  ? appBar.preferredSize.height
+                  : cupertinoNavigationBar.preferredSize.height) -
+              mediaQuery.padding.top) *
           0.7,
       child: TransactionList(
         transactions: _userTransactions,
@@ -156,9 +179,8 @@ class _MyHomePageState extends State<MyHomePage> {
           fontWeight: FontWeight.bold),
     );
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -169,6 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Switch(
+                    activeColor: Theme.of(context).accentColor,
                     value: _showChart,
                     onChanged: (value) {
                       setState(() {
@@ -181,9 +204,11 @@ class _MyHomePageState extends State<MyHomePage> {
             txErro,
             if (!isLandScape)
               Container(
-                height: (MediaQuery.of(context).size.height -
-                        appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
+                height: (mediaQuery.size.height -
+                        (Platform.isIOS
+                            ? appBar.preferredSize.height
+                            : cupertinoNavigationBar.preferredSize.height) -
+                        mediaQuery.padding.top) *
                     0.25,
                 child: Chart(recentTransactions: _recentTransactions),
               ),
@@ -191,9 +216,12 @@ class _MyHomePageState extends State<MyHomePage> {
             if (isLandScape)
               _showChart
                   ? Container(
-                      height: (MediaQuery.of(context).size.height -
-                              appBar.preferredSize.height -
-                              MediaQuery.of(context).padding.top) *
+                      height: (mediaQuery.size.height -
+                              (Platform.isIOS
+                                  ? appBar.preferredSize.height
+                                  : cupertinoNavigationBar
+                                      .preferredSize.height) -
+                              mediaQuery.padding.top) *
                           0.7,
                       child: Chart(recentTransactions: _recentTransactions),
                     )
@@ -201,11 +229,24 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _startAddNewTransaction(context),
-        child: Icon(Icons.add),
-      ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            navigationBar: cupertinoNavigationBar,
+            child: pageBody,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.startFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    onPressed: () => _startAddNewTransaction(context),
+                    child: Icon(Icons.add),
+                  ),
+          );
   }
 }
