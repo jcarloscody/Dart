@@ -29,7 +29,8 @@ class _NewTransactionState extends State<NewTransaction> {
 
   void _submitData() {
     final enteredTitle = _titleController.text;
-    final enteredAmount = double.parse(_amountController.text);
+    final enteredAmount =
+        _amountController.text != "" ? double.parse(_amountController.text) : 0;
     if (enteredTitle.isEmpty ||
         enteredAmount < 0 ||
         _amountController.text.isEmpty ||
@@ -51,6 +52,7 @@ class _NewTransactionState extends State<NewTransaction> {
   }
 
   void _presentDatePicker() {
+    print('object');
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -103,6 +105,10 @@ class _NewTransactionState extends State<NewTransaction> {
                       child: Text(_selectedDate == null
                           ? 'Add Transaction'
                           : 'Date selected ${DateFormat.yMd().format((_selectedDate as DateTime))}'),
+                    ),
+                    RaisedButton(
+                      onPressed: _presentDatePicker,
+                      child: Text('Choose Date'),
                     ),
                     AdaptiveFlatButton(
                         text: "Choose date",

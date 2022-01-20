@@ -116,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _deleteTransactions(int id) {
     setState(() {
+      //CHAMA O METODO BUILD
       print("valor $id");
       _userTransactions.removeWhere((element) {
         return element.id == id;
@@ -123,8 +124,42 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Widget _buildLandscapeContent() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Switch(
+          activeColor: Theme.of(context).accentColor,
+          value: _showChart,
+          onChanged: (value) {
+            setState(() {
+              _showChart = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQuery, AppBar appBar,
+      CupertinoNavigationBar cupertinoNavigationBar, Container txListWidget) {
+    return [
+      Container(
+        height: (mediaQuery.size.height -
+                (Platform.isIOS
+                    ? appBar.preferredSize.height
+                    : cupertinoNavigationBar.preferredSize.height) -
+                mediaQuery.padding.top) *
+            0.25,
+        child: Chart(recentTransactions: _recentTransactions),
+      ),
+      txListWidget
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    // O METODO BUILD É CHAMADO SEMPRE QUE O ESTADO MUDA
     final mediaQuery = MediaQuery.of(context);
 
     final isLandScape = mediaQuery.orientation == Orientation.landscape;
@@ -186,33 +221,14 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           // ignore: prefer_const_literals_to_create_immutables
           children: <Widget>[
-            if (isLandScape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Switch(
-                    activeColor: Theme.of(context).accentColor,
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
+            if (isLandScape) _buildLandscapeContent(),
             txErro,
             if (!isLandScape)
-              Container(
-                height: (mediaQuery.size.height -
-                        (Platform.isIOS
-                            ? appBar.preferredSize.height
-                            : cupertinoNavigationBar.preferredSize.height) -
-                        mediaQuery.padding.top) *
-                    0.25,
-                child: Chart(recentTransactions: _recentTransactions),
-              ),
-            if (!isLandScape) txListWidget,
+              ..._buildPortraitContent(
+                  mediaQuery,
+                  appBar,
+                  cupertinoNavigationBar,
+                  txListWidget), //... operador de propagacao
             if (isLandScape)
               _showChart
                   ? Container(
