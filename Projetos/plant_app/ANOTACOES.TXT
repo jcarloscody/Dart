@@ -1,0 +1,9 @@
+DEPENDENCIA 
+  flutter_svg: ^0.17.4  #it help us to use SVG
+
+
+Deu problema com a seguraça nula
+https://fluttercorner.com/cannot-run-with-sound-null-safety-because-dependencies-dont-support-null-safety/
+
+
+https://www.youtube.com/watch?v=LN668OAUrK4&ab_channel=TheFlutterWay
