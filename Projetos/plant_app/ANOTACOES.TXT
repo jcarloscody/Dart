@@ -7,3 +7,4 @@ https://fluttercorner.com/cannot-run-with-sound-null-safety-because-dependencies
 
 
 https://www.youtube.com/watch?v=LN668OAUrK4&ab_channel=TheFlutterWay
+https://github.com/abuanwar072/Plant-App-Flutter-UI/blob/master/pubspec.yaml

@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:plant_app/constants.dart';
 
 class TitleWithMoreBtn extends StatelessWidget {
   final String title;
-  final Function pressMore;
+  final VoidCallback pressMore;
   const TitleWithMoreBtn({
     Key? key,
     required this.title,
@@ -19,16 +17,16 @@ class TitleWithMoreBtn extends StatelessWidget {
       child: Row(
         children: [
           TitleWithCustomUnderline(title: title),
-          Spacer(),
-          FlatButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+          const Spacer(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              onPrimary: kPrimaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
             ),
-            color: kPrimaryColor,
-            onPressed: () {
-              pressMore();
-            },
-            child: Text(
+            onPressed: pressMore,
+            child: const Text(
               "More",
               style: TextStyle(color: Colors.white),
             ),
@@ -46,7 +44,7 @@ class TitleWithCustomUnderline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 24,
       child: Stack(
         children: [
@@ -54,7 +52,7 @@ class TitleWithCustomUnderline extends StatelessWidget {
             padding: const EdgeInsets.only(left: kDefaultPadding / 4),
             child: Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -65,7 +63,7 @@ class TitleWithCustomUnderline extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-              margin: EdgeInsets.only(right: kDefaultPadding / 4),
+              margin: const EdgeInsets.only(right: kDefaultPadding / 4),
               height: 7,
               color: kPrimaryColor.withOpacity(0.2),
             ),
