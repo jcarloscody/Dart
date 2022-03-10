@@ -1,4 +1,4 @@
-import 'package:api_consumo/one_page.dart';
+import 'package:api_consumo/widgets/one_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
