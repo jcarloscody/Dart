@@ -1,0 +1,11 @@
+f = flutter
+
+
+f doctor 
+f create
+f devices ->> ver os dispositivos disponiveis para rodar o projeto
+flutter run -d id_dispositivo
+flutter analyze   ->>rodar o inter da aplicacao
+flutter build apk   ->> vai gerar o executavel para o user
+flutter channel
+flutter clean  
