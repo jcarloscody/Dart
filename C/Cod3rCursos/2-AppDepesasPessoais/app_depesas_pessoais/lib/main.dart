@@ -1,107 +1,121 @@
-import 'package:app_depesas_pessoais/models/transactions.dart';
 import 'package:flutter/material.dart';
 
+import 'components/transaction_form.dart';
+import 'components/transaction_list.dart';
+import 'models/transactions.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+  final ThemeData tema = ThemeData();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      home: const MyHomePage(),
+      theme: ThemeData().copyWith(
+        colorScheme: tema.colorScheme.copyWith(
+          primary: Colors.purple,
+          secondary: Colors.amber,
+        ),
+        textTheme: tema.textTheme.copyWith(
+          headline6: const TextStyle(
+            fontFamily: 'Quicksand',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontFamily: 'Quicksand',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-      home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final _transactions = [
-    Transaction(id: "1", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "2", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "3", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "4", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "5", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "6", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "7", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "8", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "9", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "10", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "11", title: "Tenis", value: 365.56, date: DateTime.now()),
-    Transaction(id: "12", title: "Tenis", value: 365.56, date: DateTime.now()),
-  ];
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
-  MyHomePage({Key? key}) : super(key: key);
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<Transaction> _transactions = [];
+  int _contador = 0;
+
+  _adicionarTransacao(String title, double value) {
+    _contador++;
+    var newTransation = Transaction(
+      id: _contador.toString(),
+      title: title,
+      value: value,
+      date: DateTime.now(),
+    );
+    setState(() {
+      _transactions.add(newTransation);
+    });
+
+    Navigator.of(context).pop();
+  }
+
+  showModal(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (cxt) {
+          return TransactionForm(
+            addTransaction: _adicionarTransacao,
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Despesas Pessoais")),
-      body: Column(
-        children: [
-          Container(
-            child: Card(
-              child: Text(
-                "Gráfico",
-              ),
-              elevation: 8,
-              color: Colors.amber,
-            ),
-            width: double.infinity,
+      appBar: AppBar(
+        title: const Text("Despesas Pessoais"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showModal(context);
+            },
+            icon: const Icon(Icons.add),
           ),
-          Column(
-            children: _transactions
-                .map((e) => Card(
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Text(
-                              "R\$ ${e.value.toStringAsFixed(2)}",
-                              style: const TextStyle(
-                                color: Colors.brown,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 15,
-                              vertical: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.brown,
-                                width: 2,
-                              ),
-                            ),
-                            padding: EdgeInsets.all(10),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                e.title,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                e.date.toString(),
-                                style: TextStyle(color: Colors.grey[500]),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ))
-                .toList(),
-          )
         ],
       ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              child: const Card(
+                child: Text(
+                  "Gráfico",
+                ),
+                elevation: 8,
+                color: Colors.amber,
+              ),
+              width: double.infinity,
+            ),
+            TranscationList(transactions: _transactions),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModal(context);
+        },
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
