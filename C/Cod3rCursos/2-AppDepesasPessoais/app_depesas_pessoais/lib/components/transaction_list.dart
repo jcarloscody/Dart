@@ -1,119 +1,83 @@
 import 'package:flutter/material.dart';
+import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
-import '../models/transactions.dart';
-
-class TranscationList extends StatelessWidget {
+class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
-  final Function deleteTransaction;
-  const TranscationList({
-    Key? key,
-    required this.transactions,
-    required this.deleteTransaction,
-  });
+  final void Function(String) onRemove;
+
+  TransactionList(this.transactions, this.onRemove);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 300,
-        child: transactions.isEmpty
-            ? Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
+    return transactions.isEmpty
+        ? LayoutBuilder(
+            builder: (ctx, constraints) {
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  Text(
+                    'Nenhuma Transação Cadastrada!',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    height: constraints.maxHeight * 0.6,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
                     ),
-                    const Text("Sem transacoes"),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      height: 200,
-                      child: Image.asset(
-                        "assets/img/waiting.png",
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  ],
+                  ),
+                ],
+              );
+            },
+          )
+        : ListView.builder(
+            itemCount: transactions.length,
+            itemBuilder: (ctx, index) {
+              final tr = transactions[index];
+              return Card(
+                elevation: 5,
+                margin: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
                 ),
-              )
-            : ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (ctx, index) {
-                  final e = transactions[index];
-                  return Card(
-                    elevation: 4,
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: FittedBox(
-                            child: Text(
-                              "R\$ ${e.value}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        radius: 45,
-                      ),
-                      title: Text("${e.title}"),
-                      subtitle: Text("${DateFormat("d MMM y").format(e.date)}"),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          deleteTransaction(e.id);
-                        },
-                        color: Theme.of(context).errorColor,
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: FittedBox(
+                        child: Text('R\$${tr.value}'),
                       ),
                     ),
-                  ) /*Card(
-                    child: Row(
-                      children: [
-                        Container(
-                          child: Text(
-                            "R\$ ${e.value.toStringAsFixed(2)}",
-                            style: Theme.of(context).textTheme.headline6,
-                            // style: TextStyle(
-                            //   color: Theme.of(context).primaryColorDark,
-                            //   fontWeight: FontWeight.bold,
-                            //   fontSize: 20,
-                            // ),
+                  ),
+                  title: Text(
+                    tr.title,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  subtitle: Text(
+                    DateFormat('d MMM y').format(tr.date),
+                  ),
+                  trailing: MediaQuery.of(context).size.width > 480
+                      ? TextButton.icon(
+                          onPressed: () => onRemove(tr.id),
+                          icon: Icon(Icons.delete,
+                              color: Theme.of(context).errorColor),
+                          label: Text(
+                            'Excluir',
+                            style:
+                                TextStyle(color: Theme.of(context).errorColor),
                           ),
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).primaryColorLight,
-                              width: 2,
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(10),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              e.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              DateFormat("d/MMM/y").format(e.date),
-                              style: TextStyle(color: Colors.grey[500]),
-                            )
-                          ],
                         )
-                      ],
-                    ),
-                  )*/
-                      ;
-                },
-              ));
+                      : IconButton(
+                          icon: Icon(Icons.delete),
+                          color: Theme.of(context).errorColor,
+                          onPressed: () => onRemove(tr.id),
+                        ),
+                ),
+              );
+            },
+          );
   }
 }

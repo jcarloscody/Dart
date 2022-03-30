@@ -1,54 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ChartBar extends StatelessWidget {
-  final String day;
-  final double value;
-  final double percentual;
+  final String? label;
+  final double? value;
+  final double? percentage;
 
-  const ChartBar({
-    Key? key,
-    required this.day,
-    required this.value,
-    required this.percentual,
-  }) : super(key: key);
+  ChartBar({
+    this.label,
+    this.value,
+    this.percentage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text("R\$"),
-        FittedBox(
-          child: Text("${this.value.toStringAsFixed(2)}"),
-        ),
-        Container(
-          width: 10,
-          height: 60,
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      style: BorderStyle.solid,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color: Colors.grey),
-              ),
-              FractionallySizedBox(
-                heightFactor: percentual,
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.red),
+    return LayoutBuilder(
+      builder: (ctx, constraints) {
+        return Column(
+          children: <Widget>[
+            Container(
+              height: constraints.maxHeight * 0.15,
+              child: FittedBox(
+                child: Text(
+                  '${value?.toStringAsFixed(2)}',
                 ),
-              )
-            ],
-            alignment: Alignment.bottomCenter,
-          ),
-        ),
-        Text("Day: ${this.day}")
-      ],
+              ),
+            ),
+            SizedBox(height: constraints.maxHeight * 0.05),
+            Container(
+              height: constraints.maxHeight * 0.6,
+              width: 10,
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                      color: Color.fromRGBO(220, 220, 220, 1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  ),
+                  FractionallySizedBox(
+                    heightFactor: percentage,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: constraints.maxHeight * 0.05),
+            Container(
+              height: constraints.maxHeight * 0.15,
+              child: FittedBox(
+                child: Text(label.toString()),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
