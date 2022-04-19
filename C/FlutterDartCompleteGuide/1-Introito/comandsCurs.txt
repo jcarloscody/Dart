@@ -1,7 +1,0 @@
-flutter create nome_project
-cd nome_project 
-flutter run
-
-
-
-flutter packages get
